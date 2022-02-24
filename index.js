@@ -21,6 +21,15 @@ function stickyNav() {
 	}
 }
 
+let current = "mandiLink";
+navbar.addEventListener("click", function (e) {
+	if (!e.target.classList.contains("active")) {
+		e.target.classList.add("active");
+		document.getElementById(`${current}`).classList.remove("active");
+		current = e.target.id;
+	}
+});
+
 const menu = {
 	count: 9,
 	categories: [
