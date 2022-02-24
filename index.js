@@ -10,7 +10,7 @@ window.onscroll = function () {
 const sticky = navbar.offsetTop;
 // console.log(sticky);
 
-// Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+// Add sticky class to navbar when scroll position reached. Remove sticky when scroll position left
 function stickyNav() {
 	if (window.pageYOffset >= sticky) {
 		navbar.classList.add("sticky");
@@ -123,7 +123,7 @@ const menu = {
 	],
 };
 
-//Dynamically populate
+//Dynamically populate menu items into DOM
 let html = ``;
 let categoryStr = "";
 for (category of menu.categories) {
@@ -148,8 +148,11 @@ for (category of menu.categories) {
 }
 content.innerHTML = html;
 
+//modal stuff
 const modal = document.getElementById("item-modal");
 const closeBtn = document.getElementsByClassName("close")[0];
+
+//necessary to check for all these? why doesnt .contains("menu-item") work?
 content.addEventListener("click", function (e) {
 	if (
 		e.target.classList.contains("menu-item-title") ||
@@ -157,9 +160,11 @@ content.addEventListener("click", function (e) {
 		e.target.classList.contains("menu-item-image") ||
 		e.target.classList.contains("menu-item-description") ||
 		e.target.classList.contains("menu-item-top") ||
-		e.target.classList.contains("menu-item-bottom")
+		e.target.classList.contains("menu-item-bottom") ||
+		e.target.classList.contains("item-img")
 	) {
 		modal.style.display = "block";
+		console.log(e.target.parentElement.parentElement);
 	}
 });
 
