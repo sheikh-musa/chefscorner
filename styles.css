@@ -56,7 +56,7 @@ body {
 
 .content {
 	/* padding: 20px; */
-	width: 80%;
+	width: 90%;
 	margin: 0 auto;
 	max-width: 600px;
 	/* border: 2px dotted black; */
@@ -68,12 +68,19 @@ body {
 }
 
 .menu-item {
-	display: flex;
+	/* display: flex; */
 	/* padding: 10px; */
 	justify-content: space-evenly;
 	-webkit-box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.85);
 	box-shadow: 2px 2px 3px 0px rgba(0, 0, 0, 0.85);
 	padding-bottom: 5px;
+	max-height: 200px;
+	overflow: hidden;
+}
+
+.menu-item:hover {
+	-webkit-box-shadow: 3px 3px 4px 0px rgba(0, 0, 0, 1);
+	box-shadow: 3px 3px 4px 0px rgba(0, 0, 0, 1);
 }
 
 .menu-item > div {
@@ -83,47 +90,65 @@ body {
 
 .menu-item-top {
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	padding-bottom: 20px;
 }
 
-.menu-item-left-column {
+.menu-item-bottom {
 	display: flex;
-	flex-direction: column;
+	align-items: auto;
 	justify-content: space-between;
-	width: 60%;
 }
 
-.menu-item-right-column {
-	/* flex-basis: auto; */
-	width: 40%;
-	align-self: center;
+.menu-item-description {
+	font-size: 14px;
+	flex-basis: 60%;
 }
 
-.menu-item-img {
-	width: 100%;
+.menu-item-image {
+	flex-basis: 50%;
+}
+
+.item-img {
+	width: 50%;
 	float: right;
 }
-/* 
-main {
-	display: flex;
-	flex-direction: column;
+
+/* The Modal (background) */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0, 0, 0); /* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
-div.scrollmenu {
-	background-color: #333;
-	overflow: auto;
-	white-space: nowrap;
+/* Modal Content/Box */
+.modal-content {
+	background-color: #fefefe;
+	margin: 15% auto; /* 15% from the top and centered */
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%; /* Could be more or less, depending on screen size */
 }
 
-div.scrollmenu a {
-	display: inline-block;
-	color: white;
-	text-align: center;
-	padding: 14px;
+/* The Close Button */
+.close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+	color: black;
 	text-decoration: none;
+	cursor: pointer;
 }
-
-div.scrollmenu a:hover {
-	background-color: #777;
-} */

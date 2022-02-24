@@ -21,6 +21,8 @@ function stickyNav() {
 	}
 }
 
+//Adds active class to clicked link
+//possible refactor to toggle function
 let current = "mandiLink";
 navbar.addEventListener("click", function (e) {
 	if (!e.target.classList.contains("active")) {
@@ -120,6 +122,8 @@ const menu = {
 		},
 	],
 };
+
+//Dynamically populate
 let html = ``;
 let categoryStr = "";
 for (category of menu.categories) {
@@ -131,17 +135,41 @@ for (category of menu.categories) {
 	}
 	for (item of category.items) {
 		html += `<div class="menu-item">
-				<div class="menu-item-left-column">
 					<div class="menu-item-top">
 						<div class="menu-item-title">${item.name}</div>
-						<div class="menu-item-price">${item.price}</div>
+						<div class="menu-item-price">$${item.price}</div>
 					</div>
 					<div class="menu-item-bottom">
 						<div class="menu-item-description">${item.description}</div>
+						<div class="menu-item-image"><img class="item-img" src="${item.image}"></div>
 					</div>
-				</div>
-				<div class="menu-item-right-column"><img class="menu-item-img" src="${item.image}"></div>
 			</div>`;
 	}
 }
 content.innerHTML = html;
+
+const modal = document.getElementById("item-modal");
+const closeBtn = document.getElementsByClassName("close")[0];
+content.addEventListener("click", function (e) {
+	if (
+		e.target.classList.contains("menu-item-title") ||
+		e.target.classList.contains("menu-item-price") ||
+		e.target.classList.contains("menu-item-image") ||
+		e.target.classList.contains("menu-item-description") ||
+		e.target.classList.contains("menu-item-top") ||
+		e.target.classList.contains("menu-item-bottom")
+	) {
+		modal.style.display = "block";
+	}
+});
+
+closeBtn.onclick = () => {
+	modal.style.display = "none";
+};
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+	if (event.target == modal) {
+		modal.style.display = "none";
+	}
+};
