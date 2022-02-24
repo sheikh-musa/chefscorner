@@ -1,16 +1,14 @@
+const navbar = document.getElementById("navbar");
+const content = document.getElementsByClassName("content")[0];
+
 // When the user scrolls the page, execute stickyNav
 window.onscroll = function () {
 	stickyNav();
 };
 
-// Get the navbar
-const navbar = document.getElementById("navbar");
-const content = document.getElementById("content");
-// console.log(main);
-
 // Get the offset position of the navbar
 const sticky = navbar.offsetTop;
-console.log(sticky);
+// console.log(sticky);
 
 // Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
 function stickyNav() {
@@ -28,84 +26,113 @@ const menu = {
 	categories: [
 		{
 			id: 1,
-			name: "mandi",
-			count: 3,
+			name: "Mandi",
+			count: 2,
 			items: [
 				{
-					name: "1/4 chicken mandi",
-					description: "",
+					name: "1/4 Chicken Mandi",
+					description:
+						"Honey chicken and basmati rice with a special blend of spices. Served with mutton soup and salad. Traditional dish originating from Hadhramaut, Yemen.",
 					price: 6.5,
-					category: "mandi",
+					category: "Mandi",
+					image: "",
 				},
 				{
-					name: "1/2 chicken mandi",
-					description: "",
-					price: 8.5,
-					category: "mandi",
-				},
-				{
-					name: "lamb shank mandi",
-					description: "",
+					name: "Lamb Shank Mandi",
+					description:
+						"Lamb shank and basmati rice with a special blend of spices. Served with mutton soup and salad. Traditional dish originating from Hadhramaut, Yemen.",
 					price: 16.5,
-					category: "mandi",
+					category: "Mandi",
+					image: "lamb_shank_mandi.jpg",
 				},
 			],
 		},
 		{
 			id: 2,
-			name: "rice",
+			name: "Rice",
 			count: 2,
 			items: [
 				{
-					name: "kampong fried rice",
-					description: "",
+					name: "Kampong Fried Rice",
+					description:
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 6.5,
-					category: "rice",
+					category: "Rice",
+					image: "",
 				},
 				{
-					name: "seafood fried rice",
-					description: "",
+					name: "Seafood Fried Rice",
+					description:
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 6.5,
-					category: "rice",
+					category: "Rice",
+					image: "",
 				},
 			],
 		},
 		{
 			id: 3,
-			name: "noodles",
+			name: "Noodles",
 			count: 4,
 			items: [
 				{
-					name: "seafood hor fun",
-					description: "",
+					name: "Seafood Hor Fun",
+					description:
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 7.5,
-					category: "noodles",
+					category: "Noodles",
+					image: "",
 				},
 				{
-					name: "beef hor fun",
-					description: "",
+					name: "Beef Hor Fun",
+					description:
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 8.5,
-					category: "noodles",
+					category: "Noodles",
+					image: "",
 				},
 				{
-					name: "laksa johore",
-					description: "",
+					name: "Laksa Johore",
+					description:
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 8.5,
-					category: "noodles",
+					category: "Noodles",
+					image: "",
 				},
 				{
-					name: "hokkien mee",
-					description: "",
+					name: "Hokkien Mee",
+					description:
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 7.5,
-					category: "noodles",
+					category: "Noodles",
+					image: "",
 				},
 			],
 		},
 	],
 };
-
-// for (category of menu.categories) {
-// 	for (item of category.items) {
-// 		console.log(item.category, item.name, item.price);
-// 	}
-// }
+let html = ``;
+let categoryStr = "";
+for (category of menu.categories) {
+	if (categoryStr != category.name) {
+		html += `<div id="${category.name.toLowerCase()}" class="menu-item-category">${
+			category.name
+		}</div>`;
+		categoryStr = category.name;
+	}
+	for (item of category.items) {
+		html += `<div class="menu-item">
+				<div class="menu-item-left-column">
+					<div class="menu-item-top">
+						<div class="menu-item-title">${item.name}</div>
+						<div class="menu-item-price">${item.price}</div>
+					</div>
+					<div class="menu-item-bottom">
+						<div class="menu-item-description">${item.description}</div>
+					</div>
+				</div>
+				<div class="menu-item-right-column"><img class="menu-item-img" src="${item.image}"></div>
+			</div>`;
+	}
+}
+content.innerHTML = html;
