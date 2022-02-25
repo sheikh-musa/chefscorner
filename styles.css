@@ -157,3 +157,18 @@ body {
 .modal-img {
 	width: 100%;
 }
+
+.modal-variation-top {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.modal-variation-list {
+	list-style-type: none;
+}
+
+.modal-variation-options {
+	display: flex;
+	justify-content: space-between;
+}

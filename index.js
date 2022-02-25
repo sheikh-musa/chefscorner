@@ -224,9 +224,26 @@ function populateModal(id) {
 							<div class="modal-variation-name">${variation.name}</div>
 							<div class="modal-variation-optional">${variation.optional}</div>
 						</div>
-						<div class="modal-variation-options">
-						</div>
 						`;
+						for (varItem of variation.items) {
+							html += `<div class="modal-variation-options">`;
+							if (variation.optional == "Required") {
+								html += `
+								<div class="modal-variation-options-name">
+									<input type="radio" id="${varItem.name}" value="${varItem.name}" name="reqVar"><label for="${varItem.name}">${varItem.name}</label><br>
+								</div>
+								<div class="modal-variation-options-price">$${varItem.price}<br></div>
+								`;
+							} else {
+								html += `
+								<div class="modal-variation-options-name">
+									<input type="checkbox" id="${varItem.name}" value="${varItem.name}"><label for="${varItem.name}">${varItem.name}</label><br>
+								</div>
+								<div class="modal-variation-options-price">$${varItem.price}<br></div>
+								`;
+							}
+							html += `</div>`;
+						}
 					}
 				}
 			}
