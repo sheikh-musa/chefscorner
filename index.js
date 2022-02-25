@@ -215,11 +215,10 @@ function populateModal(id) {
 				</div>
 				<div class="menu-item-bottom">
 					<div class="">${item.description}</div>
-				</div>
-				<hr>`;
+				</div>`;
 				if (item.variations) {
 					for (variation of item.variations) {
-						html += `
+						html += `<hr>
 						<div class="modal-variation-top">
 							<div class="modal-variation-name">${variation.name}</div>
 							<div class="modal-variation-optional">${variation.optional}</div>
@@ -254,3 +253,11 @@ function populateModal(id) {
 	)[0];
 	modalVariations.innerHTML = html;
 }
+
+const addToCartBtn = document.getElementById("addToCart");
+addToCartBtn.value = "Add";
+
+addToCartBtn.addEventListener("click", function (e) {
+	e.preventDefault();
+	console.log("added");
+});

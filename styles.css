@@ -137,6 +137,7 @@ body {
 	padding: 20px;
 	border: 1px solid #888;
 	width: 80%; /* Could be more or less, depending on screen size */
+	max-width: 500px;
 }
 
 /* The Close Button */
@@ -154,8 +155,13 @@ body {
 	cursor: pointer;
 }
 
+.modal-image {
+	text-align: center;
+}
+
 .modal-img {
 	width: 100%;
+	max-width: 400px;
 }
 
 .modal-variation-top {
@@ -171,4 +177,8 @@ body {
 .modal-variation-options {
 	display: flex;
 	justify-content: space-between;
+}
+
+.quantity {
+	width: 20px;
 }
