@@ -32,91 +32,116 @@ navbar.addEventListener("click", function (e) {
 	}
 });
 
+//mock database
 const menu = {
-	count: 9,
 	categories: [
 		{
-			id: 1,
 			name: "Mandi",
-			count: 2,
 			items: [
 				{
+					id: 0,
 					name: "1/4 Chicken Mandi",
 					description:
 						"Honey chicken and basmati rice with a special blend of spices. Served with mutton soup and salad. Traditional dish originating from Hadhramaut, Yemen.",
 					price: 6.5,
 					category: "Mandi",
-					image: "",
+					images: { thumbnail: "", full: "" },
 				},
 				{
+					id: 1,
 					name: "Lamb Shank Mandi",
 					description:
 						"Lamb shank and basmati rice with a special blend of spices. Served with mutton soup and salad. Traditional dish originating from Hadhramaut, Yemen.",
 					price: 16.5,
 					category: "Mandi",
-					image: "lamb_shank_mandi.jpg",
+					images: {
+						thumbnail: "lamb_shank_thumbnail.jpg",
+						full: "lamb_shank_full.jpg",
+					},
+					variations: [
+						{
+							name: "Additional Meat",
+							optional: true,
+							items: [
+								{ name: "Beef", price: 4 },
+								{ name: "Mutton", price: 6 },
+								{ name: "Lamb Shank", price: 8 },
+							],
+						},
+						{
+							name: "Chilli",
+							optional: false,
+							items: [
+								{ name: "No Chilli", price: 0 },
+								{ name: "Regular Chilli", price: 0 },
+								{ name: "Extra Chilli", price: 0 },
+							],
+						},
+					],
 				},
 			],
 		},
 		{
-			id: 2,
 			name: "Rice",
-			count: 2,
 			items: [
 				{
+					id: 2,
 					name: "Kampong Fried Rice",
 					description:
 						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 6.5,
 					category: "Rice",
-					image: "",
+					images: { thumbnail: "", full: "" },
 				},
 				{
+					id: 3,
 					name: "Seafood Fried Rice",
 					description:
 						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 6.5,
 					category: "Rice",
-					image: "",
+					images: { thumbnail: "", full: "" },
 				},
 			],
 		},
 		{
-			id: 3,
 			name: "Noodles",
-			count: 4,
 			items: [
 				{
+					id: 4,
 					name: "Seafood Hor Fun",
 					description:
 						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 7.5,
 					category: "Noodles",
-					image: "",
+					images: { thumbnail: "", full: "" },
 				},
 				{
+					id: 5,
 					name: "Beef Hor Fun",
 					description:
 						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 8.5,
 					category: "Noodles",
-					image: "",
+					images: { thumbnail: "", full: "" },
 				},
 				{
+					id: 6,
 					name: "Laksa Johore",
 					description:
 						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 8.5,
 					category: "Noodles",
-					image: "",
+					images: { thumbnail: "", full: "" },
 				},
 				{
+					id: 7,
 					name: "Hokkien Mee",
 					description:
 						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
 					price: 7.5,
 					category: "Noodles",
-					image: "",
+					images: { thumbnail: "", full: "" },
 				},
 			],
 		},
@@ -134,14 +159,14 @@ for (category of menu.categories) {
 		categoryStr = category.name;
 	}
 	for (item of category.items) {
-		html += `<div class="menu-item">
+		html += `<div id="${item.id}" class="menu-item">
 					<div class="menu-item-top">
 						<div class="menu-item-title">${item.name}</div>
 						<div class="menu-item-price">$${item.price}</div>
 					</div>
 					<div class="menu-item-bottom">
 						<div class="menu-item-description">${item.description}</div>
-						<div class="menu-item-image"><img class="item-img" src="${item.image}"></div>
+						<div class="menu-item-image"><img class="item-img" src="${item.images.thumbnail}"></div>
 					</div>
 			</div>`;
 	}
@@ -151,23 +176,18 @@ content.innerHTML = html;
 //modal stuff
 const modal = document.getElementById("item-modal");
 const closeBtn = document.getElementsByClassName("close")[0];
+const menuItem = document.getElementsByClassName("menu-item");
 
-//necessary to check for all these? why doesnt .contains("menu-item") work?
-content.addEventListener("click", function (e) {
-	if (
-		e.target.classList.contains("menu-item-title") ||
-		e.target.classList.contains("menu-item-price") ||
-		e.target.classList.contains("menu-item-image") ||
-		e.target.classList.contains("menu-item-description") ||
-		e.target.classList.contains("menu-item-top") ||
-		e.target.classList.contains("menu-item-bottom") ||
-		e.target.classList.contains("item-img")
-	) {
-		modal.style.display = "block";
-		console.log(e.target.parentElement.parentElement);
-	}
-});
-
+//get item info when clicked
+for (let i = 0; i < menuItem.length; i++) {
+	menuItem[i].addEventListener("click", function (e) {
+		{
+			modal.style.display = "block";
+			let clickedId = menuItem[i].id;
+			populateModal(clickedId);
+		}
+	});
+}
 closeBtn.onclick = () => {
 	modal.style.display = "none";
 };
@@ -178,3 +198,38 @@ window.onclick = function (event) {
 		modal.style.display = "none";
 	}
 };
+
+//Dynamically populate item variations into modal
+function populateModal(id) {
+	let html = ``;
+	for (category of menu.categories) {
+		for (item of category.items) {
+			if (item.id == id) {
+				html += `
+				<div class="modal-image">
+					<img class="modal-img" src="${item.images.full}">
+				</div>
+				<div class="menu-item-top">
+					<div class="menu-item-title">${item.name}</div>
+					<div class="menu-item-price">$${item.price}</div>
+				</div>
+				<div class="menu-item-bottom">
+					<div class="">${item.description}</div>
+				</div>
+				<hr>`;
+				if (item.variations) {
+					for (variation of item.variations) {
+						html += `
+						<div class="modal-variation-name">
+							<div></div>
+						</div>`;
+					}
+				}
+			}
+		}
+	}
+	const modalVariations = document.getElementsByClassName(
+		"modal-item-variations"
+	)[0];
+	modalVariations.innerHTML = html;
+}
