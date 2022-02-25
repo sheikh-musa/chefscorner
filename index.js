@@ -208,18 +208,22 @@ function resetQuantity() {
 }
 
 //Dynamically populate item variations into modal
+let cartItem;
+let cartPrice;
 function populateModal(id) {
 	let html = ``;
 	for (category of menu.categories) {
 		for (item of category.items) {
 			if (item.id == id) {
+				cartItem = item.name;
+				cartPrice = item.price;
 				html += `
 				<div class="modal-image">
 					<img class="modal-img" src="${item.images.full}">
 				</div>
 				<div class="menu-item-top">
 					<div class="menu-item-title modal-item-title">${item.name}</div>
-					<div class="menu-item-price">$${item.price}</div>
+					<div class="menu-item-price modal-item-price">$${item.price}</div>
 				</div>
 				<div class="menu-item-bottom">
 					<div class="">${item.description}</div>
@@ -271,10 +275,13 @@ addToCartBtn.addEventListener("click", function (e) {
 });
 const quantity = document.getElementById("quantity");
 function addToCart() {
-	const item = document.getElementsByClassName("modal-item-title")[0].innerHTML;
+	let cart = {};
+	console.log(cartItem, cartPrice, quantity.value);
+
 	for (input of document.querySelectorAll("input")) {
 		// console.log(input);
 		if ((input.type == "checkbox" || input.type == "radio") && input.checked) {
+			console.log(input.id, input.value);
 		}
 	}
 }
