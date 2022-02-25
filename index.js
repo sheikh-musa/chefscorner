@@ -61,7 +61,7 @@ const menu = {
 					variations: [
 						{
 							name: "Additional Meat",
-							optional: true,
+							optional: "Optional",
 							items: [
 								{ name: "Beef", price: 4 },
 								{ name: "Mutton", price: 6 },
@@ -70,7 +70,7 @@ const menu = {
 						},
 						{
 							name: "Chilli",
-							optional: false,
+							optional: "Required",
 							items: [
 								{ name: "No Chilli", price: 0 },
 								{ name: "Regular Chilli", price: 0 },
@@ -220,9 +220,13 @@ function populateModal(id) {
 				if (item.variations) {
 					for (variation of item.variations) {
 						html += `
-						<div class="modal-variation-name">
-							<div></div>
-						</div>`;
+						<div class="modal-variation-top">
+							<div class="modal-variation-name">${variation.name}</div>
+							<div class="modal-variation-optional">${variation.optional}</div>
+						</div>
+						<div class="modal-variation-options">
+						</div>
+						`;
 					}
 				}
 			}
