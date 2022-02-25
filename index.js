@@ -188,16 +188,24 @@ for (let i = 0; i < menuItem.length; i++) {
 		}
 	});
 }
+
 closeBtn.onclick = () => {
 	modal.style.display = "none";
+	resetQuantity();
 };
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
 	if (event.target == modal) {
 		modal.style.display = "none";
+		resetQuantity();
 	}
 };
+
+function resetQuantity() {
+	quantity.value = 1;
+	quantity.textContent = 1;
+}
 
 //Dynamically populate item variations into modal
 function populateModal(id) {
@@ -210,7 +218,7 @@ function populateModal(id) {
 					<img class="modal-img" src="${item.images.full}">
 				</div>
 				<div class="menu-item-top">
-					<div class="menu-item-title">${item.name}</div>
+					<div class="menu-item-title modal-item-title">${item.name}</div>
 					<div class="menu-item-price">$${item.price}</div>
 				</div>
 				<div class="menu-item-bottom">
@@ -229,14 +237,14 @@ function populateModal(id) {
 							if (variation.optional == "Required") {
 								html += `
 								<div class="modal-variation-options-name">
-									<input type="radio" id="${varItem.name}" value="${varItem.name}" name="reqVar"><label for="${varItem.name}">${varItem.name}</label><br>
+									<input type="radio" id="${varItem.name}" value="${varItem.price}" name="reqVar"><label for="${varItem.name}">${varItem.name}</label><br>
 								</div>
 								<div class="modal-variation-options-price">$${varItem.price}<br></div>
 								`;
 							} else {
 								html += `
 								<div class="modal-variation-options-name">
-									<input type="checkbox" id="${varItem.name}" value="${varItem.name}"><label for="${varItem.name}">${varItem.name}</label><br>
+									<input type="checkbox" id="${varItem.name}" value="${varItem.price}"><label for="${varItem.name}">${varItem.name}</label><br>
 								</div>
 								<div class="modal-variation-options-price">$${varItem.price}<br></div>
 								`;
@@ -259,5 +267,14 @@ addToCartBtn.value = "Add";
 
 addToCartBtn.addEventListener("click", function (e) {
 	e.preventDefault();
-	console.log("added");
+	addToCart();
 });
+const quantity = document.getElementById("quantity");
+function addToCart() {
+	const item = document.getElementsByClassName("modal-item-title")[0].innerHTML;
+	for (input of document.querySelectorAll("input")) {
+		// console.log(input);
+		if ((input.type == "checkbox" || input.type == "radio") && input.checked) {
+		}
+	}
+}
