@@ -22,7 +22,7 @@ function stickyNav() {
 }
 
 //Adds active class to clicked link
-//possible refactor to toggle function
+//possible refactor to toggle function?
 let current = "mandiLink";
 navbar.addEventListener("click", function (e) {
 	if (!e.target.classList.contains("active")) {
@@ -175,10 +175,12 @@ content.innerHTML = html;
 
 //modal stuff
 const modal = document.getElementById("item-modal");
+const cartModal = document.getElementById("cart-modal");
 const closeBtn = document.getElementsByClassName("close")[0];
+const closeCartBtn = document.getElementsByClassName("cartClose")[0];
 const menuItem = document.getElementsByClassName("menu-item");
 
-//get item info when clicked
+//listen for click event on each item, display and populate modal
 for (let i = 0; i < menuItem.length; i++) {
 	menuItem[i].addEventListener("click", function (e) {
 		{
@@ -189,24 +191,32 @@ for (let i = 0; i < menuItem.length; i++) {
 	});
 }
 
+//closes modal
 closeBtn.onclick = () => {
-	modal.style.display = "none";
-	resetQuantity();
+	clearModal();
 };
-
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
 	if (event.target == modal) {
-		modal.style.display = "none";
-		resetQuantity();
+		clearModal();
 	}
 };
-
-function resetQuantity() {
+//hides modal and resets quantity to 1 if item not added to cart
+function clearModal() {
+	modal.style.display = "none";
 	quantity.value = 1;
 	quantity.textContent = 1;
 }
-
+// closes modal
+closeCartBtn.onclick = () => {
+	cartModal.style.display = "none";
+};
+// doesnt work the second time even though i am targetting different modal
+// window.onclick = function (event) {
+// 	if (event.target == cartModal) {
+// 		cartModal.style.display = "none";
+// 	}
+// };
 //Dynamically populate item variations into modal
 let cartItem;
 let cartPrice;
@@ -228,6 +238,7 @@ function populateModal(id) {
 				<div class="menu-item-bottom">
 					<div class="">${item.description}</div>
 				</div>`;
+				//if item has variations
 				if (item.variations) {
 					for (variation of item.variations) {
 						html += `<hr>
@@ -241,7 +252,7 @@ function populateModal(id) {
 							if (variation.optional == "Required") {
 								html += `
 								<div class="modal-variation-options-name">
-									<input type="radio" id="${varItem.name}" value="${varItem.price}" name="reqVar"><label for="${varItem.name}">${varItem.name}</label><br>
+									<input type="radio" checked="checked" id="${varItem.name}" value="${varItem.price}" name="reqVar"><label for="${varItem.name}">${varItem.name}</label><br>
 								</div>
 								<div class="modal-variation-options-price">$${varItem.price}<br></div>
 								`;
@@ -265,23 +276,65 @@ function populateModal(id) {
 	)[0];
 	modalVariations.innerHTML = html;
 }
+// console.log(checksAndRadios);
 
 const addToCartBtn = document.getElementById("addToCart");
 addToCartBtn.value = "Add";
-
 addToCartBtn.addEventListener("click", function (e) {
+	//prevent page refresh
 	e.preventDefault();
-	addToCart();
+	//ensure minimum quantity is 1
+	if (quantity.value > 0) {
+		console.log(addToCart());
+		clearModal();
+	} else {
+		alert("Incorrect Quantity");
+	}
 });
-const quantity = document.getElementById("quantity");
-function addToCart() {
-	let cart = {};
-	console.log(cartItem, cartPrice, quantity.value);
 
-	for (input of document.querySelectorAll("input")) {
-		// console.log(input);
-		if ((input.type == "checkbox" || input.type == "radio") && input.checked) {
-			console.log(input.id, input.value);
+let cart = [];
+function addToCart() {
+	let item = {
+		name: cartItem,
+		basePrice: cartPrice,
+		itemQuantity: quantity.value,
+		variations: [],
+	};
+	//iterate through checkboxes and radios
+	const checksAndRadios = document.querySelectorAll("input");
+	for (input of checksAndRadios) {
+		if (input.type == "checkbox" && input.checked) {
+			//add selected optional variation into array
+			item.variations.push({ name: input.id, price: input.value });
+		}
+		if (input.type == "radio" && input.checked) {
+			//add selected required variation into array
+			item.variations.push({ name: input.id, price: input.value });
 		}
 	}
+
+	//if item has variations, get variation total price and item total price
+	if (item.variations.length > 0) {
+		let varTotal = 0;
+		for (variationItem of item.variations) {
+			varTotal += Number(variationItem.price);
+			item.varTotal = varTotal;
+			console.log("log3", item.varTotal);
+		}
+		item.totalPrice = (item.basePrice + item.varTotal) * item.itemQuantity;
+		cart.push(item);
+	}
+	//no variations
+	else {
+		item.totalPrice = item.basePrice * item.itemQuantity;
+		cart.push(item);
+	}
+	return cart;
 }
+
+const cartBtn = document.getElementsByClassName("cart-icon")[0];
+// const cartModal = document.getElementById("cart-modal");
+cartBtn.addEventListener("click", () => {
+	console.log("cart");
+	cartModal.style.display = "block";
+});
