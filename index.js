@@ -191,14 +191,23 @@ for (let i = 0; i < menuItem.length; i++) {
 	});
 }
 
-//closes modal
+//closes item modal
 closeBtn.onclick = () => {
 	clearModal();
 };
+//closes cart modal
+closeCartBtn.onclick = () => {
+	cartModal.style.display = "none";
+};
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
+	//item modal
 	if (event.target == modal) {
 		clearModal();
+	}
+	//cart modal
+	if (event.target == cartModal) {
+		cartModal.style.display = "none";
 	}
 };
 //hides modal and resets quantity to 1 if item not added to cart
@@ -207,16 +216,7 @@ function clearModal() {
 	quantity.value = 1;
 	quantity.textContent = 1;
 }
-// closes modal
-closeCartBtn.onclick = () => {
-	cartModal.style.display = "none";
-};
-// doesnt work the second time even though i am targetting different modal
-// window.onclick = function (event) {
-// 	if (event.target == cartModal) {
-// 		cartModal.style.display = "none";
-// 	}
-// };
+
 //Dynamically populate item variations into modal
 let cartItem;
 let cartPrice;
@@ -279,13 +279,16 @@ function populateModal(id) {
 // console.log(checksAndRadios);
 
 const addToCartBtn = document.getElementById("addToCart");
+let cartContents = {};
 addToCartBtn.value = "Add";
 addToCartBtn.addEventListener("click", function (e) {
 	//prevent page refresh
 	e.preventDefault();
 	//ensure minimum quantity is 1
 	if (quantity.value > 0) {
-		console.log(addToCart());
+		cartContents = addToCart();
+		// console.log(cartContents);
+		// populateCart(cartContents);
 		clearModal();
 	} else {
 		alert("Incorrect Quantity");
@@ -319,7 +322,7 @@ function addToCart() {
 		for (variationItem of item.variations) {
 			varTotal += Number(variationItem.price);
 			item.varTotal = varTotal;
-			console.log("log3", item.varTotal);
+			// console.log("log3", item.varTotal);
 		}
 		item.totalPrice = (item.basePrice + item.varTotal) * item.itemQuantity;
 		cart.push(item);
@@ -335,6 +338,11 @@ function addToCart() {
 const cartBtn = document.getElementsByClassName("cart-icon")[0];
 // const cartModal = document.getElementById("cart-modal");
 cartBtn.addEventListener("click", () => {
-	console.log("cart");
+	// console.log("cart");
 	cartModal.style.display = "block";
+	populateCart(cartContents);
 });
+
+function populateCart(cart) {
+	console.log(cart);
+}
