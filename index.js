@@ -380,8 +380,8 @@ function populateCart(cart) {
 				<div class="cart-grand-total-title">Grand Total:</div>
 				<div class="cart-grand-total-price">${cartTotal}</div>
 			</div>
-			<hr>
-			<button id="checkout-button">Checkout</button>`;
+			<hr>`;
+		checkoutBtn.style.display = "block";
 	} catch {
 		//if cart empty
 		html += `<div><p>Cart empty</p></div>`;
@@ -389,5 +389,12 @@ function populateCart(cart) {
 	cartContent.innerHTML = html;
 }
 
-const checkoutBtn = document.getElementById("checkout-button");
-checkoutBtn.addEventListener("click", () => {});
+const checkoutBtn = document.getElementsByClassName("checkout-button")[0];
+console.log(checkoutBtn);
+checkoutBtn.addEventListener("click", () => {
+	processOrder(cart);
+});
+
+function processOrder(cart) {
+	console.log(cart);
+}
