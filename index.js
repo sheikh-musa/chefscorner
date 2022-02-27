@@ -365,13 +365,14 @@ function populateCart(cart) {
 						<div class="cart-variation-price">${variation.price}</div>
 					</div>`;
 				}
-			}
-			html += `<hr>
+				html += `
 			<div class="cart-item-total">
 				<div class="cart-item-total-title">Item Total:</div>
 				<div class="cart-item-total-price">${item.totalPrice}</div>
 			</div>
 			<hr>`;
+			}
+
 			cartTotal += item.totalPrice;
 		}
 		html += `
@@ -379,10 +380,14 @@ function populateCart(cart) {
 				<div class="cart-grand-total-title">Grand Total:</div>
 				<div class="cart-grand-total-price">${cartTotal}</div>
 			</div>
-			<hr>`;
+			<hr>
+			<button id="checkout-button">Checkout</button>`;
 	} catch {
 		//if cart empty
 		html += `<div><p>Cart empty</p></div>`;
 	}
 	cartContent.innerHTML = html;
 }
+
+const checkoutBtn = document.getElementById("checkout-button");
+checkoutBtn.addEventListener("click", () => {});
