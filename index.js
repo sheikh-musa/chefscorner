@@ -343,6 +343,46 @@ cartBtn.addEventListener("click", () => {
 	populateCart(cartContents);
 });
 
+const cartContent = document.getElementsByClassName("cart-items")[0];
 function populateCart(cart) {
 	console.log(cart);
+	let html = `<div><h2>Cart</h2></div>`;
+	let cartTotal = 0;
+	try {
+		for (item of cart) {
+			console.log(item.name, item.variations, item.totalPrice);
+			html += `
+			<div class="cart-item">
+				<div class="cart-item-name">${item.name}</div>
+				<div class="cart-item-quantity">${item.itemQuantity}</div>
+				<div class="cart-item-price">${item.basePrice}</div>
+			</div>`;
+			if (item.variations) {
+				for (variation of item.variations) {
+					html += `
+					<div class="cart-variation">
+						<div class="cart-variation-name">- ${variation.name}</div>
+						<div class="cart-variation-price">${variation.price}</div>
+					</div>`;
+				}
+			}
+			html += `<hr>
+			<div class="cart-item-total">
+				<div class="cart-item-total-title">Item Total:</div>
+				<div class="cart-item-total-price">${item.totalPrice}</div>
+			</div>
+			<hr>`;
+			cartTotal += item.totalPrice;
+		}
+		html += `
+			<div class="cart-grand-total">
+				<div class="cart-grand-total-title">Grand Total:</div>
+				<div class="cart-grand-total-price">${cartTotal}</div>
+			</div>
+			<hr>`;
+	} catch {
+		//if cart empty
+		html += `<div><p>Cart empty</p></div>`;
+	}
+	cartContent.innerHTML = html;
 }

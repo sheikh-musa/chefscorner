@@ -219,3 +219,20 @@ body {
 .quantity {
 	width: 35px;
 }
+
+.cart-variation {
+	font-size: 14px;
+}
+
+.cart-item,
+.cart-variation,
+.cart-item-total,
+.cart-grand-total {
+	display: flex;
+	justify-content: space-between;
+}
+
+.cart-variation {
+	display: flex;
+	justify-content: space-between;
+}
