@@ -152,7 +152,9 @@ const menu = {
 let html = ``;
 let categoryStr = "";
 for (category of menu.categories) {
+	//skips repeated category names
 	if (categoryStr != category.name) {
+		//for single page navigation with #categoryName
 		html += `<div id="${category.name.toLowerCase()}" class="menu-item-category">${
 			category.name
 		}</div>`;
@@ -218,8 +220,8 @@ function clearModal() {
 }
 
 //Dynamically populate item variations into modal
-let cartItem;
-let cartPrice;
+let cartItem = "";
+let cartPrice = "";
 function populateModal(id) {
 	let html = ``;
 	for (category of menu.categories) {
@@ -344,13 +346,13 @@ cartBtn.addEventListener("click", () => {
 });
 
 const cartContent = document.getElementsByClassName("cart-items")[0];
+
 function populateCart(cart) {
-	console.log(cart);
-	let html = `<div><h2>Cart</h2></div>`;
 	let cartTotal = 0;
+	let html = `<div><h2>Cart</h2></div>`;
 	try {
 		for (item of cart) {
-			console.log(item.name, item.variations, item.totalPrice);
+			// console.log(item.name, item.variations, item.totalPrice);
 			html += `
 			<div class="cart-item">
 				<div class="cart-item-name">${item.name}</div>
@@ -390,7 +392,6 @@ function populateCart(cart) {
 }
 
 const checkoutBtn = document.getElementsByClassName("checkout-button")[0];
-console.log(checkoutBtn);
 checkoutBtn.addEventListener("click", () => {
 	processOrder(cart);
 });
