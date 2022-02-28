@@ -289,8 +289,6 @@ addToCartBtn.addEventListener("click", function (e) {
 	//ensure minimum quantity is 1
 	if (quantity.value > 0) {
 		cartContents = addToCart();
-		// console.log(cartContents);
-		// populateCart(cartContents);
 		clearModal();
 	} else {
 		alert("Incorrect Quantity");
@@ -327,12 +325,36 @@ function addToCart() {
 			// console.log("log3", item.varTotal);
 		}
 		item.totalPrice = (item.basePrice + item.varTotal) * item.itemQuantity;
-		cart.push(item);
+		// cart.push(item);
+		console.log("item with variations push");
+		pushToCart(item);
+		console.log("pushed");
+		// console.log(JSON.stringify(item));
 	}
 	//no variations
 	else {
 		item.totalPrice = item.basePrice * item.itemQuantity;
-		cart.push(item);
+		// cart.push(item);
+		console.log("item with no variation push");
+		pushToCart(item);
+		console.log("pushed");
+		// console.log(JSON.stringify(item));
+	}
+	//checks if exact item is already in cart, then increase quantity of said item
+	function pushToCart(item) {
+		if (cart.length > 0) {
+			let str = JSON.stringify(item).slice(60);
+			console.log(str.indexOf('"', 0));
+			for (cartItem of cart) {
+				console.log(JSON.stringify(cartItem));
+				if (JSON.stringify(item) == JSON.stringify(cartItem)) {
+					cartItem.itemQuantity =
+						parseInt(cartItem.itemQuantity) + parseInt(item.itemQuantity);
+				}
+			}
+		} else {
+			cart.push(item);
+		}
 	}
 	return cart;
 }
