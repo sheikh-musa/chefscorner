@@ -278,7 +278,6 @@ function populateModal(id) {
 	)[0];
 	modalVariations.innerHTML = html;
 }
-// console.log(checksAndRadios);
 
 const addToCartBtn = document.getElementById("addToCart");
 let cartContents = {};
@@ -289,6 +288,7 @@ addToCartBtn.addEventListener("click", function (e) {
 	//ensure minimum quantity is 1
 	if (quantity.value > 0) {
 		cartContents = addToCart();
+		console.log(cartContents);
 		clearModal();
 	} else {
 		alert("Incorrect Quantity");
@@ -300,7 +300,7 @@ function addToCart() {
 	let item = {
 		name: cartItem,
 		basePrice: cartPrice,
-		itemQuantity: quantity.value,
+		itemQuantity: parseInt(quantity.value),
 		variations: [],
 	};
 	//iterate through checkboxes and radios
@@ -309,10 +309,12 @@ function addToCart() {
 		if (input.type == "checkbox" && input.checked) {
 			//add selected optional variation into array
 			item.variations.push({ name: input.id, price: input.value });
+			console.log("optional variation added");
 		}
 		if (input.type == "radio" && input.checked) {
 			//add selected required variation into array
 			item.variations.push({ name: input.id, price: input.value });
+			console.log("required variation added");
 		}
 	}
 
@@ -326,34 +328,77 @@ function addToCart() {
 		}
 		item.totalPrice = (item.basePrice + item.varTotal) * item.itemQuantity;
 		// cart.push(item);
-		console.log("item with variations push");
-		pushToCart(item);
-		console.log("pushed");
+		pushToCart(item, true);
 		// console.log(JSON.stringify(item));
 	}
 	//no variations
 	else {
 		item.totalPrice = item.basePrice * item.itemQuantity;
 		// cart.push(item);
-		console.log("item with no variation push");
-		pushToCart(item);
-		console.log("pushed");
+		pushToCart(item, false);
 		// console.log(JSON.stringify(item));
 	}
-	//checks if exact item is already in cart, then increase quantity of said item
-	function pushToCart(item) {
+
+	//  checks if exact item is already in cart, then increase quantity of said item
+	function pushToCart(item, variation) {
 		if (cart.length > 0) {
-			let str = JSON.stringify(item).slice(60);
-			console.log(str.indexOf('"', 0));
 			for (cartItem of cart) {
-				console.log(JSON.stringify(cartItem));
-				if (JSON.stringify(item) == JSON.stringify(cartItem)) {
-					cartItem.itemQuantity =
-						parseInt(cartItem.itemQuantity) + parseInt(item.itemQuantity);
+				// console.log(item);
+				// console.log(jsonify(item));
+				// console.log(cartItem);
+				// console.log(jsonify(cartItem));
+				if (item.name == cartItem.name) {
+					if (jsonify(item, variation) == jsonify(cartItem, variation)) {
+						// console.log(
+						// 	`
+						// 	current quantity is ${cartItem.itemQuantity}, adding ${
+						// 		item.itemQuantity
+						// 	} at item total of ${item.totalPrice}
+						// 	current total is ${cartItem.totalPrice}, expected new total is ${
+						// 		cartItem.totalPrice + item.totalPrice
+						// 	}`
+						// );
+						cartItem.itemQuantity += item.itemQuantity;
+						console.log(`new cart quantity is ${cartItem.itemQuantity}`);
+						cartItem.totalPrice += item.totalPrice;
+					} else {
+						cart.push(item);
+					}
+				} else {
+					cart.push(item);
 				}
 			}
 		} else {
 			cart.push(item);
+		}
+
+		function jsonify(item, variation = false) {
+			let str1 = "";
+			let str2 = "";
+			if (!variation) {
+				// console.log(JSON.stringify(item));
+				str1 = JSON.stringify(item).slice(0, 59);
+				// console.log(str1);
+				str2 = JSON.stringify(item).slice(59, 90);
+				// console.log(str2);
+				let index = str2.indexOf(",");
+				// console.log(index);
+				str2 = str2.slice(index);
+				// console.log(str2);
+			} else {
+				console.log("VARIATION");
+				// console.log(JSON.stringify(item));
+				str1 = JSON.stringify(item).slice(0, 59);
+				console.log(str1);
+				str2 = JSON.stringify(item).slice(59);
+				// console.log(str2);
+				let index = str2.indexOf(",");
+				// console.log(index);
+				let index2 = str2.lastIndexOf(":");
+				str2 = str2.slice(index, index2);
+				console.log(str2);
+			}
+			return str1 + str2;
 		}
 	}
 	return cart;
