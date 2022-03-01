@@ -1,38 +1,20 @@
 const navbar = document.getElementById("navbar");
 const content = document.getElementsByClassName("content")[0];
-
-// When the user scrolls the page, execute stickyNav
-window.onscroll = function () {
-	stickyNav();
-};
-
-// Get the offset position of the navbar
 const sticky = navbar.offsetTop;
-// console.log(sticky);
+const modal = document.getElementById("item-modal");
+const cartModal = document.getElementById("cart-modal");
+const closeBtn = document.getElementsByClassName("close")[0];
+const closeCartBtn = document.getElementsByClassName("cartClose")[0];
+const menuItem = document.getElementsByClassName("menu-item");
+const addToCartBtn = document.getElementById("addToCart");
+const modalVariations = document.getElementsByClassName(
+	"modal-item-variations"
+)[0];
+const cartBtn = document.getElementsByClassName("cart-icon")[0];
+const cartContent = document.getElementsByClassName("cart-items")[0];
+const checkoutBtn = document.getElementsByClassName("checkout-button")[0];
 
-// Add sticky class to navbar when scroll position reached. Remove sticky when scroll position left
-function stickyNav() {
-	if (window.pageYOffset >= sticky) {
-		navbar.classList.add("sticky");
-		content.classList.add("sticky-content");
-	} else {
-		navbar.classList.remove("sticky");
-		content.classList.remove("sticky-content");
-	}
-}
-
-//Adds active class to clicked link
-//possible refactor to toggle function?
-let current = "mandiLink";
-navbar.addEventListener("click", function (e) {
-	if (!e.target.classList.contains("active")) {
-		e.target.classList.add("active");
-		document.getElementById(`${current}`).classList.remove("active");
-		current = e.target.id;
-	}
-});
-
-//mock database
+// Mock database
 const menu = {
 	categories: [
 		{
@@ -92,6 +74,26 @@ const menu = {
 					price: 6.5,
 					category: "Rice",
 					images: { thumbnail: "", full: "" },
+					variations: [
+						{
+							name: "Additional Meat",
+							optional: "Optional",
+							items: [
+								{ name: "Beef", price: 4 },
+								{ name: "Mutton", price: 6 },
+								{ name: "Lamb Shank", price: 8 },
+							],
+						},
+						{
+							name: "Chilli",
+							optional: "Required",
+							items: [
+								{ name: "No Chilli", price: 0 },
+								{ name: "Regular Chilli", price: 0 },
+								{ name: "Extra Chilli", price: 0 },
+							],
+						},
+					],
 				},
 				{
 					id: 3,
@@ -145,10 +147,72 @@ const menu = {
 				},
 			],
 		},
+		{
+			name: "Seafood",
+			items: [
+				{
+					id: 8,
+					name: "Tiger Prawn",
+					description:
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
+					price: 7.5,
+					category: "Seafood",
+					images: { thumbnail: "", full: "" },
+				},
+				{
+					id: 9,
+					name: "Sotong",
+					description:
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
+					price: 8.5,
+					category: "Seafood",
+					images: { thumbnail: "", full: "" },
+				},
+				{
+					id: 10,
+					name: "Siakap",
+					description:
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
+					price: 8.5,
+					category: "Seafood",
+					images: { thumbnail: "", full: "" },
+				},
+				{
+					id: 11,
+					name: "Pomfret",
+					description:
+						"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis rhoncus leo a mi cursus gravida.",
+					price: 7.5,
+					category: "Seafood",
+					images: { thumbnail: "", full: "" },
+				},
+			],
+		},
 	],
 };
 
-//Dynamically populate menu items into DOM
+// Add sticky class to navbar when scroll position reached, remove when scroll position left
+window.onscroll = () => {
+	if (window.pageYOffset >= sticky) {
+		navbar.classList.add("sticky");
+		content.classList.add("sticky-content");
+	} else {
+		navbar.classList.remove("sticky");
+		content.classList.remove("sticky-content");
+	}
+};
+
+// Adds active class to clicked link - possible refactor to toggle function?
+let current = "mandiLink";
+navbar.addEventListener("click", function (e) {
+	if (!e.target.classList.contains("active")) {
+		e.target.classList.add("active");
+		document.getElementById(`${current}`).classList.remove("active");
+		current = e.target.id;
+	}
+});
+
+// Dynamically populate menu items into DOM
 let html = ``;
 let categoryStr = "";
 for (category of menu.categories) {
@@ -175,14 +239,7 @@ for (category of menu.categories) {
 }
 content.innerHTML = html;
 
-//modal stuff
-const modal = document.getElementById("item-modal");
-const cartModal = document.getElementById("cart-modal");
-const closeBtn = document.getElementsByClassName("close")[0];
-const closeCartBtn = document.getElementsByClassName("cartClose")[0];
-const menuItem = document.getElementsByClassName("menu-item");
-
-//listen for click event on each item, display and populate modal
+// Listen for click event on each item, then displays and populate modal
 for (let i = 0; i < menuItem.length; i++) {
 	menuItem[i].addEventListener("click", function (e) {
 		{
@@ -193,11 +250,11 @@ for (let i = 0; i < menuItem.length; i++) {
 	});
 }
 
-//closes item modal
+// Closes item modal
 closeBtn.onclick = () => {
 	clearModal();
 };
-//closes cart modal
+// Closes cart modal
 closeCartBtn.onclick = () => {
 	cartModal.style.display = "none";
 };
@@ -212,14 +269,14 @@ window.onclick = function (event) {
 		cartModal.style.display = "none";
 	}
 };
-//hides modal and resets quantity to 1 if item not added to cart
+// Hides modal and resets quantity to 1 if item not added to cart
 function clearModal() {
 	modal.style.display = "none";
 	quantity.value = 1;
 	quantity.textContent = 1;
 }
 
-//Dynamically populate item variations into modal
+// Dynamically populate item variations into modal
 let cartItem = "";
 let cartPrice = "";
 function populateModal(id) {
@@ -240,7 +297,6 @@ function populateModal(id) {
 				<div class="menu-item-bottom">
 					<div class="">${item.description}</div>
 				</div>`;
-				//if item has variations
 				if (item.variations) {
 					for (variation of item.variations) {
 						html += `<hr>
@@ -273,13 +329,9 @@ function populateModal(id) {
 			}
 		}
 	}
-	const modalVariations = document.getElementsByClassName(
-		"modal-item-variations"
-	)[0];
 	modalVariations.innerHTML = html;
 }
 
-const addToCartBtn = document.getElementById("addToCart");
 let cartContents = {};
 addToCartBtn.value = "Add";
 addToCartBtn.addEventListener("click", function (e) {
@@ -303,8 +355,9 @@ function addToCart() {
 		itemQuantity: parseInt(quantity.value),
 		variations: [],
 	};
+	console.log("current quantity", quantity.value);
 	//iterate through checkboxes and radios
-	const checksAndRadios = document.querySelectorAll("input");
+	let checksAndRadios = document.querySelectorAll("input");
 	for (input of checksAndRadios) {
 		if (input.type == "checkbox" && input.checked) {
 			//add selected optional variation into array
@@ -336,40 +389,25 @@ function addToCart() {
 		item.totalPrice = item.basePrice * item.itemQuantity;
 		// cart.push(item);
 		pushToCart(item, false);
-		// console.log(JSON.stringify(item));
+		console.log(JSON.stringify(item));
 	}
 
 	//  checks if exact item is already in cart, then increase quantity of said item
 	function pushToCart(item, variation) {
-		if (cart.length > 0) {
+		if (cart.length == 0) {
+			cart.push(item);
+		} else {
 			for (cartItem of cart) {
-				// console.log(item);
-				// console.log(jsonify(item));
-				// console.log(cartItem);
-				// console.log(jsonify(cartItem));
-				if (item.name == cartItem.name) {
-					if (jsonify(item, variation) == jsonify(cartItem, variation)) {
-						// console.log(
-						// 	`
-						// 	current quantity is ${cartItem.itemQuantity}, adding ${
-						// 		item.itemQuantity
-						// 	} at item total of ${item.totalPrice}
-						// 	current total is ${cartItem.totalPrice}, expected new total is ${
-						// 		cartItem.totalPrice + item.totalPrice
-						// 	}`
-						// );
-						cartItem.itemQuantity += item.itemQuantity;
-						console.log(`new cart quantity is ${cartItem.itemQuantity}`);
-						cartItem.totalPrice += item.totalPrice;
-					} else {
-						cart.push(item);
-					}
+				if (jsonify(item, variation) == jsonify(cartItem, variation)) {
+					cartItem.itemQuantity += item.itemQuantity;
+					console.log(
+						`duplicate found, new item quantity is ${cartItem.itemQuantity}`
+					);
+					cartItem.totalPrice += item.totalPrice;
 				} else {
 					cart.push(item);
 				}
 			}
-		} else {
-			cart.push(item);
 		}
 
 		function jsonify(item, variation = false) {
@@ -386,17 +424,17 @@ function addToCart() {
 				str2 = str2.slice(index);
 				// console.log(str2);
 			} else {
-				console.log("VARIATION");
+				// console.log("VARIATION");
 				// console.log(JSON.stringify(item));
 				str1 = JSON.stringify(item).slice(0, 59);
-				console.log(str1);
+				// console.log(str1);
 				str2 = JSON.stringify(item).slice(59);
 				// console.log(str2);
 				let index = str2.indexOf(",");
 				// console.log(index);
 				let index2 = str2.lastIndexOf(":");
 				str2 = str2.slice(index, index2);
-				console.log(str2);
+				// console.log(str2);
 			}
 			return str1 + str2;
 		}
@@ -404,15 +442,11 @@ function addToCart() {
 	return cart;
 }
 
-const cartBtn = document.getElementsByClassName("cart-icon")[0];
-// const cartModal = document.getElementById("cart-modal");
 cartBtn.addEventListener("click", () => {
 	// console.log("cart");
 	cartModal.style.display = "block";
 	populateCart(cartContents);
 });
-
-const cartContent = document.getElementsByClassName("cart-items")[0];
 
 function populateCart(cart) {
 	let cartTotal = 0;
@@ -458,7 +492,6 @@ function populateCart(cart) {
 	cartContent.innerHTML = html;
 }
 
-const checkoutBtn = document.getElementsByClassName("checkout-button")[0];
 checkoutBtn.addEventListener("click", () => {
 	processOrder(cart);
 });
