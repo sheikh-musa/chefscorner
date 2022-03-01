@@ -380,65 +380,65 @@ function addToCart() {
 			// console.log("log3", item.varTotal);
 		}
 		item.totalPrice = (item.basePrice + item.varTotal) * item.itemQuantity;
-		// cart.push(item);
-		pushToCart(item, true);
+		cart.push(item);
+		// pushToCart(item, true);
 		// console.log(JSON.stringify(item));
 	}
 	//no variations
 	else {
 		item.totalPrice = item.basePrice * item.itemQuantity;
-		// cart.push(item);
-		pushToCart(item, false);
+		cart.push(item);
+		// pushToCart(item, false);
 		console.log(JSON.stringify(item));
 	}
 
-	//  checks if exact item is already in cart, then increase quantity of said item
-	function pushToCart(item, variation) {
-		if (cart.length == 0) {
-			cart.push(item);
-		} else {
-			for (cartItem of cart) {
-				if (jsonify(item, variation) == jsonify(cartItem, variation)) {
-					cartItem.itemQuantity += item.itemQuantity;
-					console.log(
-						`duplicate found, new item quantity is ${cartItem.itemQuantity}`
-					);
-					cartItem.totalPrice += item.totalPrice;
-				} else {
-					cart.push(item);
-				}
-			}
-		}
+	// checks if exact item is already in cart, then increase quantity of said item
+	// function pushToCart(item, variation) {
+	// 	if (cart.length == 0) {
+	// 		cart.push(item);
+	// 	} else {
+	// 		for (cartItem of cart) {
+	// 			if (jsonify(item, variation) == jsonify(cartItem, variation)) {
+	// 				cartItem.itemQuantity += item.itemQuantity;
+	// 				console.log(
+	// 					`duplicate found, new item quantity is ${cartItem.itemQuantity}`
+	// 				);
+	// 				cartItem.totalPrice += item.totalPrice;
+	// 			} else {
+	// 				cart.push(item);
+	// 			}
+	// 		}
+	// 	}
 
-		function jsonify(item, variation = false) {
-			let str1 = "";
-			let str2 = "";
-			if (!variation) {
-				// console.log(JSON.stringify(item));
-				str1 = JSON.stringify(item).slice(0, 59);
-				// console.log(str1);
-				str2 = JSON.stringify(item).slice(59, 90);
-				// console.log(str2);
-				let index = str2.indexOf(",");
-				// console.log(index);
-				str2 = str2.slice(index);
-				// console.log(str2);
-			} else {
-				// console.log("VARIATION");
-				// console.log(JSON.stringify(item));
-				str1 = JSON.stringify(item).slice(0, 59);
-				// console.log(str1);
-				str2 = JSON.stringify(item).slice(59);
-				// console.log(str2);
-				let index = str2.indexOf(",");
-				// console.log(index);
-				let index2 = str2.lastIndexOf(":");
-				str2 = str2.slice(index, index2);
-				// console.log(str2);
-			}
-			return str1 + str2;
-		}
-	}
+	// 	function jsonify(item, variation = false) {
+	// 		let str1 = "";
+	// 		let str2 = "";
+	// 		if (!variation) {
+	// 			// console.log(JSON.stringify(item));
+	// 			str1 = JSON.stringify(item).slice(0, 59);
+	// 			// console.log(str1);
+	// 			str2 = JSON.stringify(item).slice(59, 90);
+	// 			// console.log(str2);
+	// 			let index = str2.indexOf(",");
+	// 			// console.log(index);
+	// 			str2 = str2.slice(index);
+	// 			// console.log(str2);
+	// 		} else {
+	// 			// console.log("VARIATION");
+	// 			// console.log(JSON.stringify(item));
+	// 			str1 = JSON.stringify(item).slice(0, 59);
+	// 			// console.log(str1);
+	// 			str2 = JSON.stringify(item).slice(59);
+	// 			// console.log(str2);
+	// 			let index = str2.indexOf(",");
+	// 			// console.log(index);
+	// 			let index2 = str2.lastIndexOf(":");
+	// 			str2 = str2.slice(index, index2);
+	// 			// console.log(str2);
+	// 		}
+	// 		return str1 + str2;
+	// 	}
+	// }
 	return cart;
 }
 
