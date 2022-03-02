@@ -15,6 +15,7 @@ const cartContent = document.getElementsByClassName("cart-items")[0];
 const checkoutBtn = document.getElementsByClassName("checkout-button")[0];
 const updateBtn = document.getElementsByClassName("update-cart")[0];
 const addQuantity = document.getElementById("addQuantity");
+const cartCounter = document.getElementsByClassName("cart-count")[0];
 
 // Mock database
 const menu = {
@@ -617,6 +618,7 @@ addToCartBtn.addEventListener("click", function (e) {
 });
 
 let cart = [];
+let cartCountTotal = 0;
 function addToCart() {
 	let item = {
 		id: cartItemId,
@@ -651,6 +653,7 @@ function addToCart() {
 		item.totalPrice = (item.basePrice + item.varTotal) * item.itemQuantity;
 		// cart.push(item);
 		pushToCart(item, true);
+
 		// console.log(JSON.stringify(item));
 	}
 	//no variations
@@ -664,6 +667,7 @@ function addToCart() {
 	function pushToCart(item, variation) {
 		if (cart.length == 0) {
 			cart.push(item);
+			cartCountTotal++;
 			console.log("cart empty, item pushed", item.name);
 		} else {
 			let duplicate = false;
@@ -676,15 +680,23 @@ function addToCart() {
 					duplicate = true;
 					console.log("duplicate found", duplicate);
 					cartItem.itemQuantity += item.itemQuantity;
+					console.log(cartCountTotal, item.itemQuantity);
+					cartCountTotal += item.itemQuantity;
 					cartItem.totalPrice += item.totalPrice;
 				}
 			}
 			if (!duplicate) {
 				cart.push(item);
+				cartCountTotal++;
 				console.log("no duplicates found, item pushed", item.name);
 			}
 		}
 	}
+
+	for (item in cart) {
+	}
+	cartBtn.style.display = "block";
+	cartCounter.innerText = cartCountTotal;
 	return cart;
 }
 
