@@ -13,6 +13,8 @@ const modalVariations = document.getElementsByClassName(
 const cartBtn = document.getElementsByClassName("cart-icon")[0];
 const cartContent = document.getElementsByClassName("cart-items")[0];
 const checkoutBtn = document.getElementsByClassName("checkout-button")[0];
+const updateBtn = document.getElementsByClassName("update-cart")[0];
+const addQuantity = document.getElementById("addQuantity");
 
 // Mock database
 const menu = {
@@ -534,14 +536,15 @@ window.onclick = function (event) {
 		cartModal.style.display = "none";
 	}
 };
-// Hides modal and resets quantity to 1 if item not added to cart
+// Hides modal and resets addQuantity to 1 if item not added to cart
 function clearModal() {
 	modal.style.display = "none";
-	quantity.value = 1;
-	quantity.textContent = 1;
+	addQuantity.value = 1;
+	addQuantity.textContent = 1;
 }
 
 // Dynamically populate item variations into modal
+let cartItemId = "";
 let cartItem = "";
 let cartPrice = "";
 function populateModal(id) {
@@ -549,6 +552,7 @@ function populateModal(id) {
 	for (category of menu.categories) {
 		for (item of category.items) {
 			if (item.id == id) {
+				cartItemId = item.id;
 				cartItem = item.name;
 				cartPrice = item.price;
 				html += `
@@ -602,8 +606,8 @@ addToCartBtn.value = "Add";
 addToCartBtn.addEventListener("click", function (e) {
 	//prevent page refresh
 	e.preventDefault();
-	//ensure minimum quantity is 1
-	if (quantity.value > 0) {
+	//ensure minimum addQuantity is 1
+	if (addQuantity.value > 0) {
 		cartContents = addToCart();
 		console.log(cartContents);
 		clearModal();
@@ -615,12 +619,12 @@ addToCartBtn.addEventListener("click", function (e) {
 let cart = [];
 function addToCart() {
 	let item = {
+		id: cartItemId,
 		name: cartItem,
 		basePrice: cartPrice,
-		itemQuantity: parseInt(quantity.value),
+		itemQuantity: parseInt(addQuantity.value),
 		variations: [],
 	};
-	console.log("current quantity", quantity.value);
 	//iterate through checkboxes and radios
 	let checksAndRadios = document.querySelectorAll("input");
 	for (input of checksAndRadios) {
@@ -702,9 +706,8 @@ function populateCart(cart) {
 				<div class="cart-item-quantity-and-price">
 					<div class="cart-item-quantity"><input
 						type="number"
-						id="quantity"
-						class="quantity"
-						name="quantity"
+						id="quantity${item.id}"
+						class="addQuantity"
 						step="1"
 						value="${item.itemQuantity}"
 					/></div>
@@ -736,12 +739,17 @@ function populateCart(cart) {
 			</div>
 			<hr>`;
 		checkoutBtn.style.display = "block";
+		updateBtn.style.display = "block";
 	} catch {
 		//if cart empty
 		html += `<div><p>Cart empty</p></div>`;
 	}
 	cartContent.innerHTML = html;
 }
+
+updateBtn.onclick = () => {
+	console.log("update");
+};
 
 checkoutBtn.addEventListener("click", () => {
 	processOrder(cart);

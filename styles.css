@@ -217,8 +217,8 @@ body {
 	justify-content: space-between;
 }
 
-.quantity {
-	width: 35px;
+.addQuantity {
+	width: 40px;
 }
 
 .cart-variation {
@@ -240,6 +240,7 @@ body {
 	width: 100px;
 }
 
-.checkout-button {
+.checkout-button,
+.update-cart {
 	display: none;
 }
