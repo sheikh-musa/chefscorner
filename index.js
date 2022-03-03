@@ -16,6 +16,10 @@ const checkoutBtn = document.getElementsByClassName("checkout-button")[0];
 const updateBtn = document.getElementsByClassName("update-cart")[0];
 const addQuantity = document.getElementById("addQuantity");
 const cartCounter = document.getElementsByClassName("cart-count")[0];
+const increaseBtn = document.getElementsByClassName("increase")[0];
+const decreaseBtn = document.getElementsByClassName("decrease")[0];
+const increaseCartBtn = document.getElementsByClassName("increaseCart");
+const decreaseCartBtn = document.getElementsByClassName("decreaseCart");
 
 // Mock database
 const menu = {
@@ -520,28 +524,33 @@ for (let i = 0; i < menuItem.length; i++) {
 
 // Closes item modal
 closeBtn.onclick = () => {
-	clearModal();
+	clearModal(modal);
 };
 // Closes cart modal
 closeCartBtn.onclick = () => {
-	cartModal.style.display = "none";
+	clearModal(cartModal);
 };
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
 	//item modal
 	if (event.target == modal) {
-		clearModal();
+		clearModal(modal);
 	}
 	//cart modal
 	if (event.target == cartModal) {
-		cartModal.style.display = "none";
+		clearModal(cartModal);
 	}
 };
-// Hides modal and resets addQuantity to 1 if item not added to cart
-function clearModal() {
-	modal.style.display = "none";
-	addQuantity.value = 1;
-	addQuantity.textContent = 1;
+
+function clearModal(modalInput) {
+	if (modalInput == modal) {
+		modal.style.display = "none";
+		addQuantity.innerText = 1;
+	} else {
+		cartModal.style.display = "none";
+		addQuantity.innerText = 1;
+	}
+	return;
 }
 
 // Dynamically populate item variations into modal
@@ -602,29 +611,22 @@ function populateModal(id) {
 	modalVariations.innerHTML = html;
 }
 
-let cartContents = {};
-addToCartBtn.value = "Add";
+let cart = [];
 addToCartBtn.addEventListener("click", function (e) {
 	//prevent page refresh
 	e.preventDefault();
-	//ensure minimum addQuantity is 1
-	if (addQuantity.value > 0) {
-		cartContents = addToCart();
-		console.log(cartContents);
-		clearModal();
-	} else {
-		alert("Incorrect Quantity");
-	}
+	cart = addToCart();
+	addQuantity.innerText = 1;
+	modal.style.display = "none";
 });
 
-let cart = [];
 let cartCountTotal = 0;
 function addToCart() {
 	let item = {
 		id: cartItemId,
 		name: cartItem,
 		basePrice: cartPrice,
-		itemQuantity: parseInt(addQuantity.value),
+		itemQuantity: parseInt(addQuantity.innerText),
 		variations: [],
 	};
 	//iterate through checkboxes and radios
@@ -667,7 +669,7 @@ function addToCart() {
 	function pushToCart(item, variation) {
 		if (cart.length == 0) {
 			cart.push(item);
-			cartCountTotal++;
+			cartCountTotal += item.itemQuantity;
 			console.log("cart empty, item pushed", item.name);
 		} else {
 			let duplicate = false;
@@ -687,13 +689,10 @@ function addToCart() {
 			}
 			if (!duplicate) {
 				cart.push(item);
-				cartCountTotal++;
+				cartCountTotal += item.itemQuantity;
 				console.log("no duplicates found, item pushed", item.name);
 			}
 		}
-	}
-
-	for (item in cart) {
 	}
 	cartBtn.style.display = "block";
 	cartCounter.innerText = cartCountTotal;
@@ -703,7 +702,7 @@ function addToCart() {
 cartBtn.addEventListener("click", () => {
 	// console.log("cart");
 	cartModal.style.display = "block";
-	populateCart(cartContents);
+	populateCart(cart);
 });
 
 function populateCart(cart) {
@@ -716,13 +715,13 @@ function populateCart(cart) {
 			<div class="cart-item">
 				<div class="cart-item-name">${item.name}</div>
 				<div class="cart-item-quantity-and-price">
-					<div class="cart-item-quantity"><input
-						type="number"
-						id="quantity${item.id}"
-						class="addQuantity"
-						step="1"
-						value="${item.itemQuantity}"
-					/></div>
+					<div class="cart-item-quantity">
+						<div class="quantity-control">
+							<span id="increase${item.id}" class="increaseCart">+</span>
+							<span id="quantity${item.id}">${item.itemQuantity}</span>
+							<span id="decrease${item.id}" class="decreaseCart">-</span>
+						</div>
+					</div>
 					<div class="cart-item-price">${item.basePrice}</div>
 				</div>
 			</div>`;
@@ -737,7 +736,7 @@ function populateCart(cart) {
 				html += `
 			<div class="cart-item-total">
 				<div class="cart-item-total-title">Item Total:</div>
-				<div class="cart-item-total-price">${item.totalPrice}</div>
+				<div id ="itemTotal${item.id}" class="cart-item-total-price">${item.totalPrice}</div>
 			</div>
 			<hr>`;
 			}
@@ -751,17 +750,91 @@ function populateCart(cart) {
 			</div>
 			<hr>`;
 		checkoutBtn.style.display = "block";
-		updateBtn.style.display = "block";
 	} catch {
 		//if cart empty
-		html += `<div><p>Cart empty</p></div>`;
+		html = `
+		<div><h2>Cart</h2></div>
+		<div><p>Cart empty</p></div>`;
 	}
 	cartContent.innerHTML = html;
-}
+	for (let i = 0; i < cart.length; i++) {
+		increaseCartBtn[i].addEventListener("click", function (e) {
+			{
+				let clickedId = increaseCartBtn[i].id;
+				increaseItem(clickedId);
+			}
+		});
+	}
 
-updateBtn.onclick = () => {
-	console.log("update");
-};
+	for (let i = 0; i < cart.length; i++) {
+		decreaseCartBtn[i].addEventListener("click", function (e) {
+			{
+				let clickedId = decreaseCartBtn[i].id;
+				decreaseItem(clickedId);
+			}
+		});
+	}
+
+	function increaseItem(id) {
+		let parsedId = Number(id.slice(8));
+		// console.log(cart);
+		for (item of cart) {
+			if (item.id == parsedId) {
+				item.itemQuantity++;
+				document.getElementById(`quantity${item.id}`).innerText++;
+				item.totalPrice += item.basePrice;
+				if (item.variations.length > 0) {
+					console.log(item.variations.varTotal);
+					item.totalPrice += item.varTotal;
+					cartTotal += item.varTotal;
+				}
+				document.getElementById(`itemTotal${item.id}`).innerText = item.totalPrice;
+				cartTotal += item.basePrice;
+				document.getElementsByClassName("cart-grand-total-price")[0].innerText =
+					cartTotal;
+				cartCountTotal++;
+				cartCounter.innerText = cartCountTotal;
+			}
+		}
+	}
+
+	function decreaseItem(id) {
+		let parsedId = Number(id.slice(8));
+		console.log(cart);
+		for (item of cart) {
+			if (item.id == parsedId && item.itemQuantity > 1) {
+				item.itemQuantity--;
+				document.getElementById(`quantity${item.id}`).innerText--;
+				item.totalPrice -= item.basePrice;
+				if (item.variations.length > 0) {
+					item.totalPrice -= item.varTotal;
+					cartTotal -= item.varTotal;
+				}
+				document.getElementById(`itemTotal${item.id}`).innerText = item.totalPrice;
+				cartTotal -= item.basePrice;
+				document.getElementsByClassName("cart-grand-total-price")[0].innerText =
+					cartTotal;
+				cartCountTotal--;
+				cartCounter.innerText = cartCountTotal;
+			} else if (item.id == parsedId && item.itemQuantity == 1) {
+				console.log("delete item");
+				console.log(cart);
+				for (let i = 0; i < cart.length; i++) {
+					if (cart[i].id === item.id) {
+						console.log("item found!");
+						cart.splice(i, 1);
+						cartCountTotal--;
+						cartCounter.innerText = cartCountTotal;
+						if (cartCountTotal == 0) {
+							cartBtn.style.display = "none";
+						}
+					}
+				}
+			}
+		}
+		populateCart(cart);
+	}
+}
 
 checkoutBtn.addEventListener("click", () => {
 	processOrder(cart);
@@ -770,3 +843,13 @@ checkoutBtn.addEventListener("click", () => {
 function processOrder(cart) {
 	console.log(cart);
 }
+
+increaseBtn.onclick = () => {
+	addQuantity.innerText++;
+};
+
+decreaseBtn.onclick = () => {
+	if (addQuantity.innerText > 1) {
+		addQuantity.innerText--;
+	}
+};

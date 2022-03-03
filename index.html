@@ -43,18 +43,25 @@
 				<span class="close">&times;</span>
 				<div class="modal-item-variations"></div>
 				<hr />
-				<form onsubmit="">
-					<label for="quantity">Quantity:</label>
-					<input
-						type="number"
-						id="addQuantity"
-						class="addQuantity"
-						name="addQuantity"
-						step="1"
-						value="1"
-					/>
-					<input type="submit" id="addToCart" />
-				</form>
+				<!-- <form onsubmit=""> -->
+				<!-- <label for="quantity">Quantity:</label> -->
+				<!-- <input
+					type="number"
+					id="addQuantity"
+					class="addQuantity"
+					name="addQuantity"
+					step="1"
+					value="1"
+				/> -->
+				<!-- <input type="submit" id="addToCart" /> -->
+				<!-- </form> -->
+				<div class="modal-footer">
+					<div class="quantity-control">
+						<span class="increase">+</span><span id="addQuantity">1</span
+						><span class="decrease">-</span>
+					</div>
+					<div><button id="addToCart">Add</button></div>
+				</div>
 			</div>
 		</div>
 
@@ -64,7 +71,6 @@
 				<span class="cartClose">&times;</span>
 				<div class="cart-items"></div>
 				<button class="checkout-button">Checkout</button>
-				<button class="update-cart">Update</button>
 			</div>
 		</div>
 	</body>
